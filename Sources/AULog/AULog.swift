@@ -11,7 +11,7 @@ import Foundation
 import OSLog
 
 public class AULog {
-    static let logger = Logger(subsystem: "com.gokoding.appupdater", category: "main")
+    static let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "AULog", category: "main")
     
     #if DEBUG
     public static var printLog = true
@@ -32,4 +32,23 @@ public class AULog {
 @inline(__always)
 public func aulog(_ messages: Any..., file: String = #file, function: String = #function) {
     AULog.log(messages, file: file, function: function)
+}
+
+// inline log，格式如：时间(精确到ms): 调用位置的类名.方法名.参数 - message
+@inline(__always)
+public func log(_ message: String = "", level: LogLevel = .verbose, file: String = #file, function: String = #function) {
+    aulog(level.rawValue, message, file: file, function: function)
+}
+
+@inline(__always)
+public func log(_ level: LogLevel = .verbose, _ message: Any..., file: String = #file, function: String = #function) {
+    aulog(level.rawValue, message, file: file, function: function)
+}
+
+public enum LogLevel: String {
+    case verbose = ""
+    case info = "🟣 "
+    case node = "🟢 "
+    case warning = "🟡 "
+    case error = "🔴 "
 }
